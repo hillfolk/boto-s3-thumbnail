@@ -23,7 +23,7 @@ def generate_dicts(cur):
 
 
 def connect_rds():
-    con = mdb.connect('testwoodongpan.c1cszeu8djke.ap-northeast-1.rds.amazonaws.com', 'markadmin', 'mark130620', 'woodongpantest')
+    con = mdb.connect('woodongpandb.cowkse8uushl.ap-northeast-1.rds.amazonaws.com', 'markadmin', 'mark130620', 'woodongpan')
     return con
 
 def getFileList( rds_conn ):
@@ -66,8 +66,8 @@ filelist = getFileList(rds)
 print filelist
 
 boto.set_stream_logger('boto')
-bucket_name = 'akiaj4liunpqaqmpedra-wdm-markmedia'
-s3 = boto.connect_s3('AKIAJXKPYG2YOAVEYETQ','re6DOqq78nv2+5mM20hLlbaFJ4Z59Wn29SR+xban');
+bucket_name = 'akiai7tf5uii75j7hj2a-wdm-markmedia'
+s3 = boto.connect_s3('AKIAI7TF5UII75J7HJ2A','9jMbpCUNtdzcbVYKINg+6BbCsfw4VKwhOelKw1Ot');
 bucket = s3.get_bucket(bucket_name)
 
 for f in filelist:
