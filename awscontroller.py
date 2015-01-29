@@ -84,7 +84,7 @@ for f in filelist:
           newkey = bucket.new_key(f['file_stre_cours']+'thumbnail/'+f['stre_file_nm'])
           newkey.set_contents_from_filename(outfile)
           key.set_acl('public-read')
-          url = newkey.generate_url(expires_in=0)
+          url = newkey.generate_url(0, query_auth=False, force_http=True)
           f['thumb_url'] = url
           updateFileList(rds,f)
           os.remove(outfile)
