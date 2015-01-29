@@ -44,20 +44,26 @@ def updateFileList(con,file):
     return True
 
 def createThumbnail(filename):
-    basewidth = 400;
-    img = Image.open(filename)
-    if img.size[0] > basewidth:
-        wpercent = (basewidth/float(img.size[0]))
-        hsize = int((float(img.size[1])*float(wpercent)))
-        img = img.resize((basewidth,hsize), PIL.Image.ANTIALIAS)
-        outfile = 'thumb/'+filename
-        img.save(outfile)
-        print 'Thumbnail 을 생성했습니다.'
-        return outfile
-    else:
-        outfile = 'thumb/'+filename
-        img.save(outfile)
-        return outfile
+    basewidth = 400
+    try:
+        img = Image.open(filename)
+        if img.size[0] > basewidth:
+            wpercent = (basewidth/float(img.size[0]))
+            hsize = int((float(img.size[1])*float(wpercent)))
+            img = img.resize((basewidth,hsize), PIL.Image.ANTIALIAS)
+            outfile = 'thumb/'+filename
+            img.save(outfile)
+            print 'Thumbnail 을 생성했습니다.'
+            return outfile
+        else:
+            outfile = 'thumb/'+filename
+            img.save(outfile)
+            return outfile
+    except Exception, e:
+        
+        return False
+   
+    
     
 
 rds = connect_rds()
@@ -81,13 +87,14 @@ for f in filelist:
           filename = f['stre_file_nm']+'.'+f['file_extsn'];
           key.get_contents_to_filename(filename)
           outfile = createThumbnail(filename)
-          newkey = bucket.new_key(f['file_stre_cours']+'thumbnail/'+f['stre_file_nm'])
-          newkey.set_contents_from_filename(outfile)
-          newkey.set_acl('public-read')
-          url = newkey.generate_url(0, query_auth=False, force_http=True,policy='public-read')
-          f['thumb_url'] = url
-          updateFileList(rds,f)
-          os.remove(outfile)
+          if outfile != False:
+              newkey = bucket.new_key(f['file_stre_cours']+'thumbnail/'+f['stre_file_nm'])
+              newkey.set_contents_from_filename(outfile)
+              newkey.set_acl('public-read')
+              url = newkey.generate_url(0, query_auth=False, force_http=True,policy='public-read')
+              f['thumb_url'] = url
+              updateFileList(rds,f)
+              os.remove(outfile)
           os.remove(filename)
 
 
