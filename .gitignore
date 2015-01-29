@@ -1,3 +1,4 @@
+.ropeproject
 .ropeproject/*
 /boto-env/
 # -*- mode: gitignore; -*-
