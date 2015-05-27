@@ -38,7 +38,8 @@ def getFileList( rds_conn ):
 def updateFileList(con,file):
     cur = con.cursor()
     cur.execute("update COMTNFILEDETAIL set THUMBNAIL_URL = %s where STRE_FILE_NM = %s ",(file['thumb_url'],file['stre_file_nm']))
-    cur.execute("update WDMMENU set MENUTHUMBNAILURL = %s where MENUIMGFILE = %s ",(file['thumb_url'],file['atch_file_id']))
+    if file['file_sn'] == 0:
+        cur.execute("update WDMMENU set MENUTHUMBNAILURL = %s where MENUIMGFILE = %s ",(file['thumb_url'],file['atch_file_id']))
     con.commit()
 
     return True
