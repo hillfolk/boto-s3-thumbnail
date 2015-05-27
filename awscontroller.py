@@ -23,7 +23,7 @@ def generate_dicts(cur):
 
 
 def connect_rds():
-    con = mdb.connect('testwoodongpan.c1cszeu8djke.ap-northeast-1.rds.amazonaws.com', 'markadmin', 'mark130620', 'woodongpantest')
+    con = mdb.connect('woodongpandb.cowkse8uushl.ap-northeast-1.rds.amazonaws.com', 'markadmin', 'mark130620', 'woodongpan')
     return con
 
 def getFileList( rds_conn ):
@@ -44,20 +44,20 @@ def updateFileList(con,file):
 
     return True
 
-def createThumbnail(filename):
-    basewidth = 400
+def createThumbnail(filename,width,folder):
+    
     try:
         img = Image.open(filename)
-        if img.size[0] > basewidth:
-            wpercent = (basewidth/float(img.size[0]))
+        if img.size[0] > width:
+            wpercent = (width/float(img.size[0]))
             hsize = int((float(img.size[1])*float(wpercent)))
-            img = img.resize((basewidth,hsize), PIL.Image.ANTIALIAS)
-            outfile = 'thumb/'+filename
+            img = img.resize((width,hsize), PIL.Image.ANTIALIAS)
+            outfile = folder+'/'+filename
             img.save(outfile)
             print 'Thumbnail 을 생성했습니다.'
             return outfile
         else:
-            outfile = 'thumb/'+filename
+            outfile = folder+'/'+filename
             img.save(outfile)
             return outfile
     except Exception, e:
@@ -87,15 +87,16 @@ for f in filelist:
       else:
           filename = f['stre_file_nm']+'.'+f['file_extsn'];
           key.get_contents_to_filename(filename)
-          outfile = createThumbnail(filename)
+          outfile = createThumbnail(filename,320,'thumbnail320')
           if outfile != False:
-              newkey = bucket.new_key(f['file_stre_cours']+'thumbnail/'+f['stre_file_nm'])
+              newkey = bucket.new_key(f['file_stre_cours']+'thumbnail320/'+f['stre_file_nm'])
               newkey.set_contents_from_filename(outfile)
               newkey.set_acl('public-read')
               url = newkey.generate_url(0, query_auth=False, force_http=True,policy='public-read')
+	      print url
               f['thumb_url'] = url
               updateFileList(rds,f)
-              os.remove(outfile)
+	      os.remove(outfile)
           os.remove(filename)
 
 
