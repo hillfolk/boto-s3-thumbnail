@@ -23,7 +23,7 @@ def generate_dicts(cur):
 
 
 def connect_rds():
-    con = mdb.connect('woodongpandb.cowkse8uushl.ap-northeast-1.rds.amazonaws.com', 'markadmin', 'mark130620', 'woodongpan')
+    con = mdb.connect('testwoodongpan.c1cszeu8djke.ap-northeast-1.rds.amazonaws.com', 'markadmin', 'mark130620', 'woodongpantest')
     return con
 
 def getFileList( rds_conn ):
